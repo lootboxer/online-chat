@@ -1,0 +1,26 @@
+{
+  "name": "chat-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest my-test --notify --config=config.json",
+    "grunt": "grunt",
+    "start": "nodemon ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^13.7.1",
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0",
+    "typescript": "^3.7.5"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.4",
+    "grunt-cli": "^1.3.2",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-exec": "^3.0.0",
+    "nodemon": "^2.0.2"
+  }
+}
