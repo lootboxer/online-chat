@@ -4,14 +4,14 @@
       <q-chat-message
       v-for="(val, index) in messages"
       :key="`message-${index}`"
-      :name="userData.nickname"
+      :name="val.name"
       :sent="val.sent"
       :text="val.text"
       >
       </q-chat-message>
 
     </div>
-    <q-footer>
+    <q-footer position="bottom" >
       <q-toolbar class="bg-grey-3 text-black row">
         <q-btn round flat icon="insert_emoticon" class="q-mr-sm" />
         <q-input rounded outlined dense 
@@ -29,49 +29,42 @@
 </template>
 
 <script>
-import store from "@/store"
 import {socketConnect} from "@/lib/connect.ts"
 
 export default {
   name:"Chat",
-  props:{
-    pickedName:{
-      type: String,
-      // name of client from clientsList
-      default: ""
-    }
-  },
   data(){
     return{
       tempMessage:"",
       messages:[],
       userData:{},
-      mySocket:{}
-    }
-  },
-  watch:{
-    pickedName:(val)=>{
-      if(this.mySocket)
-        this.mySocket.emit('start dialog', val)
+      chatSocket:null,
+      dialogWith:"Operator"
     }
   },
   computed:{
     lastMessage(){
       let lastIndex = this.messages?this.messages.length-1:0;
-      return this.messages[lastIndex]
+      return lastIndex?this.messages[lastIndex]:null
     }
   },
   methods:{
-    sendMessage() {
+    drawMessage(byMe, msg){
+      // If lastMessage was been send same user as before, then I push in array of this
       if(this.lastMessage){
-        if (this.lastMessage.sent) {
+        if (this.lastMessage.sent==byMe) {
           this.lastMessage.text.push(this.tempMessage)
-        } else {
-          this.messages.push({text:[this.tempMessage], sent:true})
-          }
-      } else {
-        this.messages.push({text:[this.tempMessage], sent:true})
-      }
+          return true;
+        }
+      } 
+      let text = byMe?[this.tempMessage]:[msg];
+      let name = byMe?this.userData.nickname:this.dialogWith
+      this.messages.push({sent:byMe,text,name})
+      return true
+    },
+    sendMessage() {
+      this.chatSocket.send({text:this.tempMessage,name:this.userData.name})
+      this.drawMessage(true)
       this.tempMessage=''
     },
     clickButton(){
@@ -79,24 +72,12 @@ export default {
     }
   },
   mounted(){
-    this.userData=store.getters.userData
-    this.mySocket = socketConnect(this.userData);
-    this.mySocket.on('message', (msg)=>{
-      if (this.lastMessage){
-        if (!this.lastMessage.sent) {
-          this.lastMessage.text.push(msg)
-        } else {
-          this.messages.push({text:[msg], sent:false})
-        }
-      } else {
-        this.messages.push({text:[msg], sent:false})
-      }
+    this.userData=this.$store.getters.userData;
+    this.chatSocket = socketConnect(this.userData)
+    this.chatSocket.on('message',({text,name})=>{
+      this.dialogWith=name
+      this.drawMessage(false, text)
     })
-    this.mySocket.on('disconnect',()=>{
-      this.mySocket = null
-      alert("DISCONNECTED, please reload page!")
-    })
-
   }
 }
 </script>

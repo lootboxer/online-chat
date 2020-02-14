@@ -8,20 +8,16 @@ interface userData {
 
 export function socketConnect( user: userData) {
 
-    const socket = io("http://localhost/")
-
+  let path = user.status == 'support'?'/support':'/'
+    const socket = io(`http://localhost${path}`)
     socket.on('connect', function() {
-      //TODO: interface of user by TS 
-      socket.emit("new Session", user)
-      if( user.status == 'support'){
-        socket.on("get users", (chats:string[])=>{
-          store.dispatch("set_chats", chats)
-        })
-      } else {
-        socket.on("START_SESSION",function(){
-          console.log("Operator connected")
-        })
-      }
+      console.log('connected')
+    })
+    socket.on('disconnect', function(){
+      console.log("disconnected")
+    })
+    socket.on("set UserList", (userList)=>{
+      store.dispatch("set_chats",userList)
     })
     return socket
 }

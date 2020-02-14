@@ -10,7 +10,9 @@ export default new Vuex.Store({
   state: {
     status:'',
     nickname:'',
-    chats:[]
+    chats:[],
+    dialogWith:'',
+    socket:null
   },
   mutations: {
     SET_STATUS(state,val){
@@ -21,6 +23,9 @@ export default new Vuex.Store({
     },
     SET_CHATS(state, val){
       state.chats = val
+    },
+    SET_DIALOG(state,name){
+      state.dialogWith = name
     }
   },
   actions: {
@@ -32,6 +37,9 @@ export default new Vuex.Store({
     },
     set_chats({commit}, val){
       commit("SET_CHATS", val)
+    },
+    set_dialog({commit},name){
+      commit("SET_DIALOG",name)
     }
   },
   modules: {

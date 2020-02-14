@@ -11,7 +11,7 @@
 
     <q-drawer show-if-above v-model="left" side="left" elevated>
       <q-item 
-      v-for="name of chatList"
+      v-for="name of usersList"
       :key='`support-${name}`'
       @click="pickUserHandler(name)"
       clickable 
@@ -22,7 +22,7 @@
     </q-drawer>
 
     <q-page-container height='100%'>
-      <Chat :pickedName="pickedName"/>
+      <Chat/>
     </q-page-container>
   </q-layout>
 
@@ -48,9 +48,14 @@ export default {
       pickedName:"",
     }
   },
+  watch:{
+    pickedName(newVal){
+      store.$dispatch('set_dialog',newVal)
+    }
+  },
   computed:{
-    chatList(){
-      return store.getters.chatList
+    usersList(){
+      return store.getters.usersList
     }
   },
   methods:{
