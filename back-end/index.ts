@@ -25,20 +25,25 @@ nspUsers.on('connect', (socket:any)=>{
   socket.on('disconnect',()=>{
     if (clients[nickname]) delete clients[nickname]
   });
-  socket.send({text:"hello user, wait operator, pleaseee...",name:"Bot"})
+  socket.send("hello user, wait operator, pleaseee...")
+  socket.on('message',msg=>{
+    nspSupports.send(msg)
+  })
 })
 
 // !SUPPORTS
 
-//todo:interface of message
+//todo:interface of acquaintance
 nspSupports.on('connect', (socket:any) => {
-  let nickname:string
   socket.emit('set UserList',Object.keys(clients))
-  socket.on('username',(name:string)=>{
-    nickname=name
+  socket.on('acquaintance',(obj:any)=>{
+    let {from,to} = obj
+    if(clients[to]){
+      clients[to].emit("acquaintance", from)
+    }
   })
   socket.on('message',(msg:any)=>{
     let {text,to} = msg
-    clients[to].send({text,name:nickname})
+    if(clients[to]) clients[to].send(text)
   })
 })

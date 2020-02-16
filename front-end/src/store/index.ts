@@ -9,7 +9,7 @@ export default new Vuex.Store({
   plugins:[createPersistedState()],
   state: {
     status:'',
-    nickname:'',
+    name:'',
     chats:[],
     dialogWith:'',
     socket:null
@@ -18,8 +18,8 @@ export default new Vuex.Store({
     SET_STATUS(state,val){
       state.status = val;
     },
-    SET_NICKNAME(state,val){
-      state.nickname = val;
+    SET_NAME(state,val){
+      state.name = val;
     },
     SET_CHATS(state, val){
       state.chats = val
@@ -32,8 +32,8 @@ export default new Vuex.Store({
     set_status({commit}, val){
       commit('SET_STATUS',val)
     },
-    set_nickname({commit}, val){
-      commit('SET_NICKNAME',val)
+    set_name({commit}, val){
+      commit('SET_NAME',val)
     },
     set_chats({commit}, val){
       commit("SET_CHATS", val)
@@ -44,8 +44,8 @@ export default new Vuex.Store({
   },
   getters: {
     status: (state) => state.status,
-    nickname: (state):string => state.nickname,
-    userData: ({status,nickname}) => {return {status,nickname}},
+    name: (state) => state.name,
+    userData: ({status, name}) => {return {status, name}},
     chatsList: state => state.chats,
     dialogWith: state => state.dialogWith
   }

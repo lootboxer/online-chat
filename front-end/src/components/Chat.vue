@@ -31,12 +31,17 @@ import {socketConnect} from "@/lib/connect.ts"
 
 export default {
   name:"Chat",
+  props:{
+    selectedName:{
+      type:String,
+      default:''
+    }
+  },
   data(){
     return{
       tempMessage:"",
       messages:[],
       userData:{},
-      chatSocket:null
     }
   },
   computed:{
@@ -45,20 +50,30 @@ export default {
       return lastIndex?this.messages[lastIndex]:null
     },
     dialogWith(){
-      return this.$store.getters.dialogWith
+      let name = this.$store.getters.dialogWith;
+      return name?name:"Bot"
+    }
+  },
+  watch:{
+    selectedName(newVal){
+      this.chatSocket.emit("acquaintance", {
+        to:newVal,
+        from:this.userData.name
+      })
+      this.$store.dispatch('set_dialog',newVal)
     }
   },
   methods:{
     drawMessage(byMe, msg){
       // If lastMessage was been send same user as before, then I push in array of this
+      let text = byMe?[this.tempMessage]:[msg];
       if(this.lastMessage){
         if (this.lastMessage.sent==byMe) {
-          this.lastMessage.text.push(this.tempMessage)
+          this.lastMessage.text.push(text)
           return true;
         }
       } 
-      let text = byMe?[this.tempMessage]:[msg];
-      let name = byMe?this.userData.nickname:this.dialogWith
+      let name = byMe?this.userData.name:this.dialogWith
       this.messages.push({sent:byMe,text,name})
       return true
     },
@@ -78,10 +93,7 @@ export default {
   mounted(){
     this.userData=this.$store.getters.userData;
     this.chatSocket = socketConnect(this.userData)
-    this.chatSocket.on('set dialogWith',(name)=>{
-      this.$store.dispatch('set_dialog',name)
-    })
-    this.chatSocket.on('message',({text,name})=>{
+    this.chatSocket.on('message',(text)=>{
       this.drawMessage(false, text)
     })
   }

@@ -44,7 +44,7 @@ export default {
     },
     toRedirect(status) {
       this.$store.dispatch('set_status',status)
-      this.$store.dispatch('set_nickname',this.nickname)
+      this.$store.dispatch('set_name',this.nickname)
       if(this.$store.getters.status == 'support') {
         this.$router.push(`/support`)
       } else {

@@ -22,7 +22,7 @@
     </q-drawer>
 
     <q-page-container height='100%'>
-      <Chat/>
+      <Chat :selectedName="pickedName"/>
     </q-page-container>
   </q-layout>
 
@@ -53,7 +53,7 @@ export default {
   },
   methods:{
     pickUserHandler(name){
-      this.$store.dispatch('set_dialog',name)
+      this.pickedName = name
     }
   },
   components:{

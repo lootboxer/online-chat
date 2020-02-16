@@ -19,18 +19,24 @@ nspUsers.on('connect', function (socket) {
         if (clients[nickname])
             delete clients[nickname];
     });
-    socket.send({ text: "hello user, wait operator, pleaseee...", name: "Bot" });
+    socket.send("hello user, wait operator, pleaseee...");
+    socket.on('message', function (msg) {
+        nspSupports.send(msg);
+    });
 });
 // !SUPPORTS
-//todo:interface of message
+//todo:interface of acquaintance
 nspSupports.on('connect', function (socket) {
-    var nickname;
     socket.emit('set UserList', Object.keys(clients));
-    socket.on('username', function (name) {
-        nickname = name;
+    socket.on('acquaintance', function (obj) {
+        var from = obj.from, to = obj.to;
+        if (clients[to]) {
+            clients[to].emit("acquaintance", from);
+        }
     });
     socket.on('message', function (msg) {
         var text = msg.text, to = msg.to;
-        clients[to].send({ text: text, name: nickname });
+        if (clients[to])
+            clients[to].send(text);
     });
 });
