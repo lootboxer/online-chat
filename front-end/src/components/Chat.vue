@@ -23,8 +23,6 @@
         <q-btn ref="sendButton" @click="sendMessage" round two-tone icon="send" />
       </q-toolbar>
     </q-footer>
-
-    
   </div>
 </template>
 
@@ -38,14 +36,16 @@ export default {
       tempMessage:"",
       messages:[],
       userData:{},
-      chatSocket:null,
-      dialogWith:"Operator"
+      chatSocket:null
     }
   },
   computed:{
     lastMessage(){
       let lastIndex = this.messages?this.messages.length-1:0;
       return lastIndex?this.messages[lastIndex]:null
+    },
+    dialogWith(){
+      return this.$store.getters.dialogWith
     }
   },
   methods:{
@@ -63,7 +63,11 @@ export default {
       return true
     },
     sendMessage() {
-      this.chatSocket.send({text:this.tempMessage,name:this.userData.name})
+      if (this.userData.status == 'support'){
+        this.chatSocket.send({text:this.tempMessage,to:this.dialogWith})
+      } else {
+        this.chatSocket.send(this.tempMessage)
+      }
       this.drawMessage(true)
       this.tempMessage=''
     },
@@ -74,8 +78,10 @@ export default {
   mounted(){
     this.userData=this.$store.getters.userData;
     this.chatSocket = socketConnect(this.userData)
+    this.chatSocket.on('set dialogWith',(name)=>{
+      this.$store.dispatch('set_dialog',name)
+    })
     this.chatSocket.on('message',({text,name})=>{
-      this.dialogWith=name
       this.drawMessage(false, text)
     })
   }

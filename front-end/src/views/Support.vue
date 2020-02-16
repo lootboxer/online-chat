@@ -11,7 +11,7 @@
 
     <q-drawer show-if-above v-model="left" side="left" elevated>
       <q-item 
-      v-for="name of usersList"
+      v-for="name of chatsList"
       :key='`support-${name}`'
       @click="pickUserHandler(name)"
       clickable 
@@ -31,8 +31,6 @@
 <script >
 import Chat from "@/components/Chat"
 
-import store from "@/store"
-
 export default {
   props:{
     supports:{
@@ -45,22 +43,17 @@ export default {
   data(){
     return {
       left: true,
-      pickedName:"",
-    }
-  },
-  watch:{
-    pickedName(newVal){
-      store.$dispatch('set_dialog',newVal)
+      pickedName:""
     }
   },
   computed:{
-    usersList(){
-      return store.getters.usersList
+    chatsList(){
+      return this.$store.getters.chatsList
     }
   },
   methods:{
     pickUserHandler(name){
-      this.pickedName = name
+      this.$store.dispatch('set_dialog',name)
     }
   },
   components:{

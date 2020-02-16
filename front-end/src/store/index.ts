@@ -42,12 +42,11 @@ export default new Vuex.Store({
       commit("SET_DIALOG",name)
     }
   },
-  modules: {
-  },
   getters: {
     status: (state) => state.status,
     nickname: (state):string => state.nickname,
     userData: ({status,nickname}) => {return {status,nickname}},
-    chatList: state => state.chats
+    chatsList: state => state.chats,
+    dialogWith: state => state.dialogWith
   }
 })
