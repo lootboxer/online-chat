@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -10,18 +9,23 @@ var nspUsers = io.of("/");
 // !USERS
 var clients = {};
 nspUsers.on('connect', function (socket) {
-    var nickname;
+    var clientNickname;
     socket.on('username', function (name) {
-        nickname = name;
+        clientNickname = name;
         clients[name] = socket;
     });
     socket.on('disconnect', function () {
-        if (clients[nickname])
-            delete clients[nickname];
+        if (clients[clientNickname])
+            delete clients[clientNickname];
     });
-    socket.send("hello user, wait operator, pleaseee...");
+    socket.send("Hello user, wait operator, pleaseee...");
     socket.on('message', function (msg) {
-        nspSupports.send(msg);
+        if (clients[clientNickname].dialogWith) {
+            clients[clientNickname].dialogWith.send(msg);
+        }
+        else {
+            nspSupports.send("Please, help me! I here alone! My name is: \"" + clientNickname + "\"");
+        }
     });
 });
 // !SUPPORTS
@@ -31,6 +35,7 @@ nspSupports.on('connect', function (socket) {
     socket.on('acquaintance', function (obj) {
         var from = obj.from, to = obj.to;
         if (clients[to]) {
+            clients[to].dialogWith = socket;
             clients[to].emit("acquaintance", from);
         }
     });

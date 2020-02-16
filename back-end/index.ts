@@ -1,5 +1,3 @@
-import { Socket } from "dgram";
-
 var app = require('express')();
 var server = require('http').Server(app);
 var io  = require('socket.io')(server);
@@ -17,17 +15,21 @@ let nspUsers = io.of("/")
 let clients:{[key: string]:any}={};
 
 nspUsers.on('connect', (socket:any)=>{
-  let nickname:string
+  let clientNickname:string
   socket.on('username', (name:string)=>{
-    nickname = name
+    clientNickname = name
     clients[name] = socket
   });
   socket.on('disconnect',()=>{
-    if (clients[nickname]) delete clients[nickname]
+    if (clients[clientNickname]) delete clients[clientNickname]
   });
-  socket.send("hello user, wait operator, pleaseee...")
-  socket.on('message',msg=>{
-    nspSupports.send(msg)
+  socket.send("Hello user, wait operator, pleaseee...")
+  socket.on('message',(msg:string) => {
+    if (clients[clientNickname].dialogWith){
+      clients[clientNickname].dialogWith.send(msg)
+    } else {
+      nspSupports.send(`Please, help me! I here alone! My name is: "${clientNickname}"`)
+    }
   })
 })
 
@@ -39,6 +41,7 @@ nspSupports.on('connect', (socket:any) => {
   socket.on('acquaintance',(obj:any)=>{
     let {from,to} = obj
     if(clients[to]){
+      clients[to].dialogWith=socket
       clients[to].emit("acquaintance", from)
     }
   })

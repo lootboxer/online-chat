@@ -1,10 +1,10 @@
 <template>
-  <q-layout view="lHh Lpr lff">
+  <q-layout view="lHh Lpr lFf">
     <q-header class="bg-primary text-white">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="left = !left" />
         <q-toolbar-title>
-          Пользователи
+          {{dialogWith?`Вы разговариватее с ${dialogWith}`:'Bot'}}
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -21,9 +21,7 @@
       </q-item>
     </q-drawer>
 
-    <q-page-container height='100%'>
-      <Chat :selectedName="pickedName"/>
-    </q-page-container>
+    <Chat :selectedName="pickedName"/>
   </q-layout>
 
 </template>
@@ -49,6 +47,9 @@ export default {
   computed:{
     chatsList(){
       return this.$store.getters.chatsList
+    },
+    dialogWith(){
+      return this.$store.getters.dialogWith
     }
   },
   methods:{

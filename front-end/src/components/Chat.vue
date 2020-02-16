@@ -1,17 +1,21 @@
 <template>
   <div id="app" class="q-pa-md column justify-between">
-    <div id="chatField" >
-      <q-chat-message
-      v-for="(val, index) in messages"
-      :key="`message-${index}`"
-      :name="val.name"
-      :sent="val.sent"
-      :text="val.text"
-      >
-      </q-chat-message>
+    <q-page-container>
+      <q-page ref="chatPage" class="flex column">
+        <div class="q-pa-md column col justify-end">
+            <q-chat-message
+            v-for="(val, index) in messages"
+            :key="`message-${index}`"
+            :name="val.name"
+            :sent="val.sent"
+            :text="val.text"
+            >
+            </q-chat-message>
+        </div>
+      </q-page>
+    </q-page-container>
 
-    </div>
-    <q-footer position="bottom" >
+    <q-footer>
       <q-toolbar class="bg-grey-3 text-black row">
         <q-btn round flat icon="insert_emoticon" class="q-mr-sm" />
         <q-input rounded outlined dense 
@@ -77,6 +81,10 @@ export default {
       this.messages.push({sent:byMe,text,name})
       return true
     },
+    scrollToBottom(){
+      let chatPage = this.$refs.chatPage.$el
+      window.scrollTo(0,chatPage.scrollHeight)
+    },
     sendMessage() {
       if (this.userData.status == 'support'){
         this.chatSocket.send({text:this.tempMessage,to:this.dialogWith})
@@ -85,6 +93,7 @@ export default {
       }
       this.drawMessage(true)
       this.tempMessage=''
+      this.scrollToBottom()
     },
     clickButton(){
       this.$refs.sendButton.click()
