@@ -1,35 +1,36 @@
+import { RouteConfig } from 'vue-router'
+import store from "src/store"
+
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '@/store'
 
 Vue.use(VueRouter)
 
-const routes = [
+const routes: RouteConfig[] = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/Login.vue')
+    component: () => import('src/views/Login.vue')
   },
   {
     path: '/',
     name: 'Client',
-    component: () => import('@/views/Client.vue')
+    component: () => import('layouts/MainLayout.vue')
   },
   {
     path: '/support',
     name: 'Support',
-    component: () => import('@/views/Support.vue')
+    component: () => import('layouts/MainLayout.vue')
   }
 ]
 
 const router = new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
+  // base: process.env.BASE_URL,
   routes
 })
 
 router.beforeEach((to,from,next)=>{
-  if (['client','support'].includes(store.getters.status)) {
+  if (store.getters.status in ['client','support'] ) {
     next()
   } else if (to.path!='/login') {
     next('/login');

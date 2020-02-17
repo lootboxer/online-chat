@@ -54,9 +54,3 @@ export default {
   }
 }
 </script>
-
-<style>
-#buttons{
-
-}
-</style>

@@ -1,5 +1,5 @@
-import io from 'socket.io-client';
-import store from '@/store'
+import * as io from "socket.io-client";
+import store from 'src/store'
 
 interface userData {
   name:string;

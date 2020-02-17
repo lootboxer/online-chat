@@ -2,7 +2,7 @@
   <div id="app" class="q-pa-md column justify-between">
     <q-page-container>
       <q-page ref="chatPage" class="flex column">
-        <div class="q-pa-md column col justify-end">
+        <div class="q-pa-md column col">
             <q-chat-message
             v-for="(val, index) in messages"
             :key="`message-${index}`"
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import {socketConnect} from "@/lib/connect.ts"
+import {socketConnect} from "src/lib/connect.ts"
 
 export default {
   name:"Chat",
