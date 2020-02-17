@@ -1,8 +1,10 @@
+import * as socketio from 'socket.io';
+
 var app = require('express')();
 var server = require('http').Server(app);
-var io  = require('socket.io')(server);
+var io = socketio(server);
 
-let port: number = 80
+let port: number = 8091
 server.listen(port,()=>console.log(port,`Listen on ${port}`));
 
 

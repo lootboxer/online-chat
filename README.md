@@ -1,13 +1,12 @@
 # online-chat
  Online web-chat on web-sockets
-
-# Front-end
 ---
-> Before all steps you should change directory to ./front-end
 
-## Quasar-cli, node.js
+> Before all steps you should install npm dependencies by `npm i`
 
-1. > `npx quasar dev`
+## In bash (on unix)
+
+> `npm run start`
 
 ## With docker
 

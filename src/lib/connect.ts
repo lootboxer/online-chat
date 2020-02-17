@@ -9,7 +9,7 @@ interface userData {
 export function socketConnect( user: userData) {
 
   let path = user.status == 'support'?'/support':'/'
-  const socket = io(`http://localhost${path}`)
+  const socket = io(`http://localhost:8091${path}`)
   socket.emit("username", user.name)
   socket.on('connect', function() {
     console.log("connected")

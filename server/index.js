@@ -1,8 +1,10 @@
 "use strict";
+exports.__esModule = true;
+var socketio = require("socket.io");
 var app = require('express')();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var port = 80;
+var io = socketio(server);
+var port = 8091;
 server.listen(port, function () { return console.log(port, "Listen on " + port); });
 var nspSupports = io.of('/support');
 var nspUsers = io.of("/");
