@@ -42,7 +42,8 @@ export default {
         if (val) this.toRedirect('support')
       })
     },
-    toRedirect(status) {
+    toRedirect(path) {
+      let status = path=='support'?'support':"user"
       this.$store.dispatch('set_status',status)
       this.$store.dispatch('set_name',this.nickname)
       if(this.$store.getters.status == 'support') {

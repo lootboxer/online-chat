@@ -15,10 +15,12 @@ nspUsers.on('connect', function (socket) {
     socket.on('username', function (name) {
         clientNickname = name;
         clients[name] = socket;
+        nspSupports.emit("set UsersList", Object.keys(clients));
     });
     socket.on('disconnect', function () {
         if (clients[clientNickname])
             delete clients[clientNickname];
+        nspSupports.emit("set UsersList", Object.keys(clients));
     });
     socket.send("Hello user, wait operator, pleaseee...");
     socket.on('message', function (msg) {
@@ -40,6 +42,13 @@ nspSupports.on('connect', function (socket) {
             clients[to].dialogWith = socket;
             clients[to].emit("acquaintance", from);
         }
+    });
+    socket.on("disconnect", function (socket) {
+        var withoutOperator = Object.keys(clients).find(function (val) {
+            return clients[val].socket == socket;
+        });
+        if (withoutOperator)
+            clients[withoutOperator].socket.emit("acquaintance", "ботом");
     });
     socket.on('message', function (msg) {
         var text = msg.text, to = msg.to;

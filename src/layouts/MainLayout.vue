@@ -1,13 +1,21 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header class="bg-primary text-white">
-      <q-toolbar>
-        <div v-if="userData.status=='support'">
-          <q-btn dense flat round icon="menu" @click="left = !left" />
-          <q-toolbar-title>
-            {{dialogWith?`Вы разговариватее с ${dialogWith}`:'Bot'}}
-          </q-toolbar-title>
+      <q-toolbar class="justify-between">
+        <div>
+          <div v-if="userData.status=='support'">
+            <q-toolbar-title>
+            <q-btn dense flat round icon="menu" @click="left = !left" />
+              {{`Вы разговариватее с ${dialogWith?dialogWith:"ботом"}`}}
+            </q-toolbar-title>
+          </div>
         </div>
+        <q-chip 
+        icon="person" 
+        text-color="white"
+        :color="userData.status=='support'?'deep-orange':'primary'">
+          {{userData.status|roleFilter}}
+        </q-chip>
       </q-toolbar>
     </q-header>
 
@@ -56,6 +64,12 @@ export default {
   methods:{
     pickUserHandler(name){
       this.pickedName = name
+    }
+  },
+  filters:{
+    roleFilter:function(val){
+      let res = (val=="support")?"Оператор":"Пользователь"
+      return res
     }
   },
   components:{

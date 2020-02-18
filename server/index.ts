@@ -21,9 +21,11 @@ nspUsers.on('connect', (socket:any)=>{
   socket.on('username', (name:string)=>{
     clientNickname = name
     clients[name] = socket
+    nspSupports.emit("set UsersList", Object.keys(clients))
   });
   socket.on('disconnect',()=>{
     if (clients[clientNickname]) delete clients[clientNickname]
+    nspSupports.emit("set UsersList", Object.keys(clients))
   });
   socket.send("Hello user, wait operator, pleaseee...")
   socket.on('message',(msg:string) => {
@@ -46,6 +48,12 @@ nspSupports.on('connect', (socket:any) => {
       clients[to].dialogWith=socket
       clients[to].emit("acquaintance", from)
     }
+  })
+  socket.on("disconnect", (socket:any)=>{
+    let withoutOperator:string = Object.keys(clients).find((val:string)=>{
+      return clients[val].socket == socket;
+    })
+    if(withoutOperator)clients[withoutOperator].socket.emit("acquaintance", "ботом");
   })
   socket.on('message',(msg:any)=>{
     let {text,to} = msg
