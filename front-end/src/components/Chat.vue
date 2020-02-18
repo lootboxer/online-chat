@@ -105,6 +105,31 @@ export default {
     this.chatSocket.on('message',(text)=>{
       this.drawMessage(false, text)
     })
+    this.chatSocket.on('connect',socket=>{
+      this.$q.notify({
+        color:'teal',
+        position:"top",
+        message:`Вы были зарегистрированы под именем: "${this.userData.name}"`,
+        icon:"thumb_up"
+      })
+    })
+    this.chatSocket.on('disconnect',socket=>{
+      this.$q.notify({
+        color:'warning',
+        position:"right",
+        message:"Вы были отключены",
+        icon:"thumb_down"
+      })
+    })
+    this.chatSocket.on("acquaintance", (name)=>{
+      this.$q.notify({
+        color:'info',
+        position:"right",
+        message:`Вы теперь общаетесь с ${name}`,
+        icon:"info"
+      })
+      store.dispatch("set_dialog", name)
+    })
   }
 }
 </script>

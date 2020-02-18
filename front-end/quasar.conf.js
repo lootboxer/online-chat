@@ -20,7 +20,9 @@ module.exports = function (ctx) {
       all: 'auto',
       components: [],
       directives: [],
-      plugins: []
+      plugins: [
+        "Notify"
+      ]
     },
     supportIE: false,
     build: {
